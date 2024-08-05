@@ -2,6 +2,7 @@ from flask import Flask, render_template, make_response, session, make_response,
 from werkzeug.utils import secure_filename # Used for file uploads
 import os
 from os.path import join, dirname, realpath
+import feature
 # from firebase_admin import firestore, credentials, initialize_app
 
 # Firebase initializing
@@ -26,6 +27,9 @@ def index():
     response.headers["Cache-Control"] = "public, max-age=300, s-maxage=600" # Create a cache to load faster
     return response
 
+@app.route("/")
+def function():
+    return feature.function()
 # Example of url GET method request
 @app.route("/get", methods=["GET"])
 def get():
