@@ -1,0 +1,22 @@
+{% extends "index.html" %}
+{% block body %}
+    <br /><br />
+    <form method="POST" action="/itinerary">
+        <input name="name" type="text" /><br /><br />
+        <button type="submit">Submit</button>
+    </form>
+    <br /><br />
+    <table>
+        <tr>
+            <th>Time</th>
+            <th>Place</th>
+        </tr>
+    {% for item in schedule %}
+        <tr>
+            <td>{{item["time"]}}</td>
+            <td>{{item["location"]}}</td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}
+

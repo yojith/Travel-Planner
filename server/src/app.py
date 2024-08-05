@@ -2,7 +2,8 @@ from flask import Flask, render_template, make_response, session, make_response,
 from werkzeug.utils import secure_filename # Used for file uploads
 import os
 from os.path import join, dirname, realpath
-import feature
+import itinerary_module
+
 # from firebase_admin import firestore, credentials, initialize_app
 
 # Firebase initializing
@@ -27,10 +28,28 @@ def index():
     response.headers["Cache-Control"] = "public, max-age=300, s-maxage=600" # Create a cache to load faster
     return response
 
-@app.route("/")
-def function():
-    return feature.function()
-# Example of url GET method request
+@app.route("/suggest")
+def suggest():
+    return suggest.suggest()
+
+@app.route("/itinerary", methods=["POST", "GET"])
+def itinerary():
+    if request.method == "POST":
+        form = request.form
+        name = form.get("name")
+        schedule = itinerary_module.create_itinerary(name)
+
+        template = render_template("itinerary.html", schedule=schedule)
+        response = make_response(template)
+        response.headers["Cache-Control"] = "public, max-age=300, s-maxage=600" # Create a cache to load faster
+        return response
+            
+    else:
+        template = render_template("itinerary.html")
+        response = make_response(template)
+        response.headers["Cache-Control"] = "public, max-age=300, s-maxage=600" # Create a cache to load faster
+        return response
+
 @app.route("/get", methods=["GET"])
 def get():
     if request.method == "GET":
