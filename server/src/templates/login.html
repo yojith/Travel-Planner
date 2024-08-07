@@ -1,0 +1,52 @@
+{% extends "index.html" %}
+{% block body %}
+    <br /><br />
+    <h1>Google Sign-In with Flask</h1>
+    <button id="google-signin">Sign in with Google</button>
+{% endblock %}
+
+{% block script %}
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+<script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Google Sign-In
+    var provider = new firebase.auth.GoogleAuthProvider();
+    document.getElementById('google-signin').onclick = function() {
+        firebase.auth()
+            .signInWithPopup(provider)
+            .then((result) => {
+                result.user.getIdToken().then((idToken) => {
+                    fetch('/verify-token', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ idToken: idToken }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            alert('User authenticated with UID: ' + data.uid);
+                        } else {
+                            alert('Authentication failed: ' + data.message);
+                        }
+                    });
+                });
+            }).catch((error) => {
+                console.error('Error during sign-in:', error);
+            });
+    }
+</script>
+{% endblock %}

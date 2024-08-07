@@ -1,7 +1,10 @@
 {% extends "index.html" %}
 {% block body %}
+    <br /><br />    
+    <h1>Generate an Itinerary</h1>
     <br /><br />
     <form method="POST" action="/itinerary">
+        <label for="name">Enter the place to visit:</label>
         <input name="name" type="text" /><br /><br />
         <button type="submit">Submit</button>
     </form>
@@ -10,13 +13,30 @@
         <tr>
             <th>Time</th>
             <th>Place</th>
+            <th>Website</th>
+            <th>Hotels</th>
+            <th>Restaurants</th>
         </tr>
     {% for item in schedule %}
         <tr>
             <td>{{item["time"]}}</td>
             <td>{{item["location"]}}</td>
+            <td><a href={{item["website"]}}>{{item["website"]}}</a></td>
+            <td>{{item["nearby_hotels"]}}</td>
+            <td>{% for restaurant in item["nearby_restaurants"] %}
+                <p>- {{restaurant["name"]}} ({{restaurant["cuisine"]}})</p>
+                {% endfor %}
+            </td>
         </tr>
     {% endfor %}
     </table>
+
+    {% if show_calendar %}
+        <form method="POST" action="/calendar">
+            <label for="date">Enter the date to add this schedule to your calendar</label>
+            <input name="date" type="date" /><br /><br />
+            <button type="submit">Submit</button>
+        </form>
+    {% endif %}
 {% endblock %}
 
